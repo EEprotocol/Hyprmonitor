@@ -1,0 +1,11 @@
+[project]
+name="hyprmonitor"
+version="0.0.1"
+description="A tiny multi monitor QT-app for Hyprland"
+readme="README.md"
+requires-python=">=3.12"
+license={file="LICENSE"}
+authors=[
+  {name="EEprotocol",email="keik4656@gmail.com"},
+]
+dynamic={"dependendies","optional-dependencies"}

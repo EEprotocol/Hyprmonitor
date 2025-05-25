@@ -7,6 +7,6 @@ PyQt6
 - Specify the workspace to send
 - monitor rotation
 
-I welcome those whom improve this tool with me! 
-Please contact to keik4656{at}gmail.com. 
-I'm very new to Python, so I'm seeking help!
+I welcome those whom improve this tool with me! 　
+Please contact to keik4656{at}gmail.com. 　
+I'm very new to Python, so I'm seeking help!　　

@@ -1,3 +1,4 @@
+#!usr/bin/env python3
 import sys
 import json
 import subprocess
@@ -29,6 +30,13 @@ class MonitorRect(QGraphicsRectItem):
         label_rect = self.label.boundingRect()
         label_x = (width - label_rect.width()) / 2
         label_y = (height - label_rect.height()) / 2
+        self.label.setPos(label_x, label_y)
+
+    def resize(self, posx,posy,new_width, new_height):
+        self.setRect(posx, posy, new_width, new_height)
+        label_rect = self.label.boundingRect()
+        label_x = posx+(new_width - label_rect.width()) / 2
+        label_y = posy+(new_height - label_rect.height()) / 2
         self.label.setPos(label_x, label_y)
 
 class MonitorConfigurator(QMainWindow):
@@ -109,6 +117,10 @@ class MonitorConfigurator(QMainWindow):
         rect.setPos(x, y)
         self.scene.addItem(rect)
         self.monitors[name]=rect
+        if self.dataframe[name]["disabled"]:
+            self.monitors[name].setBrush(QBrush(QColor('#888888')))
+        else:
+            self.monitors[name].setBrush(QBrush(QColor('skyblue')))
 
     def reload_monitors(self):
         for mon in self.monitors.values():
@@ -139,28 +151,24 @@ class MonitorConfigurator(QMainWindow):
             if(monitordata["mirrorOf"]=="none"):
                 monitordata["mirror"]=False;
             else:
-                monitordata["今までの話はこれにdisabledの値の変化に応じてself.monitornameのモニターrectの色を変えたいということだmirror"]=True;
+                monitordata["mirror"]=True;
             self.dataframe.setdefault(name,monitordata)
 
-            tate=1080//12
-            width = (tate*mon["width"]/mon["height"])
-            #height = mon["height"] // 12
-            height=tate
+            width = mon["width"]//12
+            height=mon['height']//12
             x = mon["x"]//12
             y = mon["y"]//12
-
             self.create_monitor(name, x, y, width, height)
+
             self.mirror_source_combo.addItem(name)
 
-            max_res = f"{mon['width']}x{mon['height']}"
-            common_res =available
-            print(common_res)
+            print(available)
             #self.resolution_combo.clear()
             #self.resolution_combo.addItems(common_res)
 
             self.resolution_combo.blockSignals(True)
             self.resolution_combo.clear()
-            self.resolution_combo.addItems(common_res)
+            self.resolution_combo.addItems(available)
             print("now(reloaded):",self.dataframe[name]["resolution"])
             self.resolution_combo.setCurrentText(self.dataframe[name]["resolution"])
             self.resolution_combo.blockSignals(False)
@@ -241,8 +249,13 @@ class MonitorConfigurator(QMainWindow):
             print(f"monitor:'{self.monitorname}' does not exit")
             return
         else:
+            print(self.monitorname)
             print("resolutionchanged", self.dataframe[self.monitorname]["resolution"],"->", self.resolution_combo.currentText())
-            self.dataframe[self.monitorname]["resolution"]=self.resolution_combo.currentText()
+            s=self.dataframe[self.monitorname]["resolution"]=self.resolution_combo.currentText()
+            match = re.search(r'(\d+)x(\d+)', s)
+            width, height =tuple(map(int, match.groups()))
+            monitor=self.monitors[self.monitorname]
+            monitor.resize( monitor.pos().x(),monitor.pos().y(),width//12,height//12)
             print(self.dataframe)
 
     def on_mirror_source_changed(self):

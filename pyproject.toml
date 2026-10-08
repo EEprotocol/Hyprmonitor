@@ -1,16 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name="hyprmonitor"
-version="0.0.1"
-description="A tiny multi monitor QT-app for Hyprland"
-readme="README.md"
-requires-python=">=3.12"
-license={file="LICENSE"}
-authors=[
-  {name="EEprotocol",email="keik4656@gmail.com"},
-]
-dependencies = [
-  "Brotli==1.1.0",
-  "chardet==5.2.0",
-  "PyQt6_sip==13.10.0",
-  "zstandard==0.23.0"
-]
+name = "hyprmonitor"
+dynamic = ["version"]
+description = "A tiny multi monitor QT-app for Hyprland"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "EEprotocol", email = "keik4656@gmail.com" }]
+dependencies = ["PyQt6>=6.6"]
+
+[project.optional-dependencies]
+build = ["pyinstaller>=6"]
+
+[project.scripts]
+hyprmonitor = "hyprmonitor.__main__:main"
+
+[tool.setuptools]
+packages = ["hyprmonitor"]
+
+[tool.setuptools.dynamic]
+version = { attr = "hyprmonitor.__version__" }
